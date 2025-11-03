@@ -1,0 +1,9 @@
+# Ignore Terraform binary and provider executables
+terraform.exe
+*.exe
+*.zip
+.terraform/
+.terraform.lock.hcl
+my-key-pair.pem
+terraform.tfstate
+terraform.tfstate.backup
