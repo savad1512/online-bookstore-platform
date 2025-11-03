@@ -21,11 +21,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'orders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -98,4 +100,12 @@ REST_FRAMEWORK = {
 # External service URLs
 USERS_SERVICE_URL = config('USERS_SERVICE_URL', default='http://users-service:8001')
 BOOKS_SERVICE_URL = config('BOOKS_SERVICE_URL', default='http://books-service:8002')
+
+# CORS settings
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:8080",
+]
+CORS_ALLOW_ALL_ORIGINS = config('CORS_ALLOW_ALL_ORIGINS', default=False, cast=bool)
+CORS_ALLOW_CREDENTIALS = True
 
