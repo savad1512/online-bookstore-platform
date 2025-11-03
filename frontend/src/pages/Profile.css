@@ -1,0 +1,19 @@
+.profile-page {
+  padding: 2rem 0;
+}
+
+.profile-page h1 {
+  margin-bottom: 2rem;
+}
+
+.profile-container {
+  max-width: 600px;
+}
+
+.profile-form {
+  background: white;
+  padding: 2rem;
+  border-radius: 0.75rem;
+  box-shadow: var(--shadow-md);
+}
+

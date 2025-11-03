@@ -1,0 +1,186 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Databases
+  users_db:
+    image: postgres:15-alpine
+    container_name: users_db
+    environment:
+      POSTGRES_DB: users_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - users_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    networks:
+      - bookstore-network
+
+  books_db:
+    image: postgres:15-alpine
+    container_name: books_db
+    environment:
+      POSTGRES_DB: books_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - books_db_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+    networks:
+      - bookstore-network
+
+  orders_db:
+    image: postgres:15-alpine
+    container_name: orders_db
+    environment:
+      POSTGRES_DB: orders_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - orders_db_data:/var/lib/postgresql/data
+    ports:
+      - "5435:5432"
+    networks:
+      - bookstore-network
+
+  payments_db:
+    image: postgres:15-alpine
+    container_name: payments_db
+    environment:
+      POSTGRES_DB: payments_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - payments_db_data:/var/lib/postgresql/data
+    ports:
+      - "5436:5432"
+    networks:
+      - bookstore-network
+
+  reviews_db:
+    image: postgres:15-alpine
+    container_name: reviews_db
+    environment:
+      POSTGRES_DB: reviews_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - reviews_db_data:/var/lib/postgresql/data
+    ports:
+      - "5437:5432"
+    networks:
+      - bookstore-network
+
+  # Microservices
+  users-service:
+    build: ./users-service
+    container_name: users-service
+    ports:
+      - "8001:8001"
+    environment:
+      DB_NAME: users_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: users_db
+      DB_PORT: 5432
+      DEBUG: "True"
+    depends_on:
+      - users_db
+    networks:
+      - bookstore-network
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8001"
+
+  books-service:
+    build: ./books-service
+    container_name: books-service
+    ports:
+      - "8002:8002"
+    environment:
+      DB_NAME: books_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: books_db
+      DB_PORT: 5432
+      DEBUG: "True"
+    depends_on:
+      - books_db
+    networks:
+      - bookstore-network
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8002"
+
+  orders-service:
+    build: ./orders-service
+    container_name: orders-service
+    ports:
+      - "8003:8003"
+    environment:
+      DB_NAME: orders_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: orders_db
+      DB_PORT: 5432
+      DEBUG: "True"
+      USERS_SERVICE_URL: http://users-service:8001
+      BOOKS_SERVICE_URL: http://books-service:8002
+    depends_on:
+      - orders_db
+      - users-service
+      - books-service
+    networks:
+      - bookstore-network
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8003"
+
+  payments-service:
+    build: ./payments-service
+    container_name: payments-service
+    ports:
+      - "8004:8004"
+    environment:
+      DB_NAME: payments_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: payments_db
+      DB_PORT: 5432
+      DEBUG: "True"
+      ORDERS_SERVICE_URL: http://orders-service:8003
+    depends_on:
+      - payments_db
+      - orders-service
+    networks:
+      - bookstore-network
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8004"
+
+  reviews-service:
+    build: ./reviews-service
+    container_name: reviews-service
+    ports:
+      - "8005:8005"
+    environment:
+      DB_NAME: reviews_db
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: reviews_db
+      DB_PORT: 5432
+      DEBUG: "True"
+      USERS_SERVICE_URL: http://users-service:8001
+      BOOKS_SERVICE_URL: http://books-service:8002
+    depends_on:
+      - reviews_db
+      - users-service
+      - books-service
+    networks:
+      - bookstore-network
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8005"
+
+networks:
+  bookstore-network:
+    driver: bridge
+
+volumes:
+  users_db_data:
+  books_db_data:
+  orders_db_data:
+  payments_db_data:
+  reviews_db_data:
+
