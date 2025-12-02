@@ -1,0 +1,29 @@
+Complete deployment checklist
+Infrastructure (done)
+[x] VPC, Subnets, Security Groups
+[x] RDS PostgreSQL instance
+[x] Redis cluster
+[x] EKS cluster
+[x] EC2 instance
+Backend deployment (next)
+[ ] Create ECR repositories
+[ ] Build Docker images for 5 services
+[ ] Push images to ECR
+[ ] Create Kubernetes namespace
+[ ] Create Kubernetes secrets (DB, Redis)
+[ ] Create Kubernetes ConfigMap
+[ ] Deploy Kubernetes manifests (Deployments, Services)
+[ ] Create Ingress for API gateway
+[ ] Verify pods are running
+Frontend deployment (after backend)
+[ ] Create S3 bucket
+[ ] Create CloudFront distribution
+[ ] Build React app with production URLs
+[ ] Upload to S3
+[ ] Invalidate CloudFront cache
+Post-deployment
+[ ] Test API endpoints
+[ ] Test frontend access
+[ ] Verify database connectivity
+[ ] Set up monitoring/logging
+[ ] Configure CI/CD pipelines (optional)

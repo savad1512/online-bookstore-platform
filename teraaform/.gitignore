@@ -7,3 +7,4 @@ terraform.exe
 my-key-pair.pem
 terraform.tfstate
 terraform.tfstate.backup
+*.pem

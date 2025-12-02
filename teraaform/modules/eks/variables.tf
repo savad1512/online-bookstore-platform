@@ -21,7 +21,7 @@ variable "node_group_role_arn" {
 
 variable "node_instance_type" {
   type    = list(string)
-  default = ["t3.medium"]
+  default = ["t3.micro"]
 }
 
 variable "subnet_ids" {

@@ -5,7 +5,7 @@ variable "ami_id" {
 
 variable "instance_type" {
   type = string
-  default = "t3.medium"
+  default = "t3.micro"  # Free Tier eligible (t2.micro no longer eligible)
 }
 
 variable "subnet_id" {
@@ -25,5 +25,6 @@ variable "tags" {
 }
 
 variable "key_name" {
-  default = "my-key-pair"
+  type = string
+  default = "my-app-key"  # Must match root variables.tf
 }

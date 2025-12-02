@@ -39,17 +39,17 @@ resource "aws_security_group" "redis_sg" {
 
 resource "aws_elasticache_replication_group" "redis" {
   replication_group_id       = "my-redis"
-  description                = "Redis replication group"
+  description                = "Redis single node"
   node_type                  = var.node_type
-  replicas_per_node_group    = var.cluster_size
+  num_cache_clusters         = 1  # Single node
   engine                     = "redis"
   engine_version             = var.engine_version
-  automatic_failover_enabled = true
+  automatic_failover_enabled = false  # Disabled for single node
   parameter_group_name       = "default.redis7"
   port                       = 6379
   subnet_group_name          = aws_elasticache_subnet_group.redis.name
   security_group_ids         = [aws_security_group.redis_sg.id]
-  multi_az_enabled           = true
+  multi_az_enabled           = false  # Disabled for single node
 
   tags = merge(
     var.tags,
