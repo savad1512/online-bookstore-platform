@@ -78,7 +78,7 @@ variable "eks_cluster_name" {
 
 variable "node_instance_type" {
   type    = list(string)
-  default = ["t3.micro"]  # Free Tier eligible (note: EKS cluster itself is not free tier)
+  default = ["t3.small"]  # Free Tier eligible (note: EKS cluster itself is not free tier)
 }
 
 

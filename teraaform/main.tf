@@ -8,8 +8,10 @@ module "vpc" {
 }
 
 module "iam" {
-  source = "./modules/iam"
-  tags   = var.tags
+  source            = "./modules/iam"
+  tags              = var.tags
+  eks_cluster_name  = var.eks_cluster_name
+  create_service_accounts = true  # Will be set to true after EKS is created
 }
 
 module "eks" {

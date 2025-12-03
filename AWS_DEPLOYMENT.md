@@ -1163,4 +1163,3 @@ kubectl get deployments -n bookstore
 - Review and tighten security groups
 - Enable CloudFront access logs
 - Set up CI/CD pipelines for automated deployments
-

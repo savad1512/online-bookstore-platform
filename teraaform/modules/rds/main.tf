@@ -42,18 +42,20 @@ resource "null_resource" "create_databases" {
       sleep 30
       
       # Create databases for each microservice
-      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.endpoint} -U ${var.db_username} -d postgres -c "CREATE DATABASE users_db;" 2>&1 | grep -v "already exists" || true
-      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.endpoint} -U ${var.db_username} -d postgres -c "CREATE DATABASE books_db;" 2>&1 | grep -v "already exists" || true
-      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.endpoint} -U ${var.db_username} -d postgres -c "CREATE DATABASE orders_db;" 2>&1 | grep -v "already exists" || true
-      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.endpoint} -U ${var.db_username} -d postgres -c "CREATE DATABASE payments_db;" 2>&1 | grep -v "already exists" || true
-      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.endpoint} -U ${var.db_username} -d postgres -c "CREATE DATABASE reviews_db;" 2>&1 | grep -v "already exists" || true
+      # Use address (hostname) and port separately for psql
+      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.address} -p ${aws_db_instance.rds.port} -U ${var.db_username} -d postgres -c "CREATE DATABASE users_db;" 2>&1 | grep -v "already exists" || true
+      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.address} -p ${aws_db_instance.rds.port} -U ${var.db_username} -d postgres -c "CREATE DATABASE books_db;" 2>&1 | grep -v "already exists" || true
+      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.address} -p ${aws_db_instance.rds.port} -U ${var.db_username} -d postgres -c "CREATE DATABASE orders_db;" 2>&1 | grep -v "already exists" || true
+      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.address} -p ${aws_db_instance.rds.port} -U ${var.db_username} -d postgres -c "CREATE DATABASE payments_db;" 2>&1 | grep -v "already exists" || true
+      PGPASSWORD="${var.db_password}" psql -h ${aws_db_instance.rds.address} -p ${aws_db_instance.rds.port} -U ${var.db_username} -d postgres -c "CREATE DATABASE reviews_db;" 2>&1 | grep -v "already exists" || true
       
       echo "All databases created successfully!"
     EOT
   }
 
-  # Re-run if RDS endpoint changes
+  # Re-run if RDS address or port changes
   triggers = {
-    rds_endpoint = aws_db_instance.rds.endpoint
+    rds_address = aws_db_instance.rds.address
+    rds_port    = aws_db_instance.rds.port
   }
 }
